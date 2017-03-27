@@ -57,7 +57,7 @@ IEnumerable<Q> IEnumerable<T>::Select(Q E::* field) const
 }
 
 template < typename T >
-template<typename Q>
+template<typename Q = T>
 IEnumerable<Q> IEnumerable<T>::Select(std::function<Q(const T&)> func)const
 {
 	return IEnumerable<Q>(
