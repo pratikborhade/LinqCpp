@@ -4,14 +4,14 @@
 template<typename T>
 class IEnumerable;
 
-template< typename T, typename E >
-class SelectClause: public Iterator<T>
+template< typename Q, typename E >
+class SelectClause: public Iterator<Q>
 {
 	IEnumerable<E> base;
-	std::function<T(const E&)> functor;
-	T value;
+	std::function<Q(const E&)> functor;
+	Q value;
 public:
-	SelectClause(IEnumerable<E> val, std::function<T(const E&)> func ) : base(val), functor(func)
+	SelectClause(IEnumerable<E> val, std::function<Q(const E&)> func ) : base(val), functor(func)
 	{
 		value = functor(*base);
 	}
@@ -25,12 +25,12 @@ public:
 	}
 
 
-	virtual const T& operator*() const
+	virtual const Q& operator*() const
 	{
 		return value;
 	}
 
-	virtual T& operator*()
+	virtual Q& operator*()
 	{
 		return value;
 	}
@@ -46,21 +46,22 @@ template < typename T >
 template<typename Q, typename E = std::enable_if_t< std::is_class(T), T>::type>
 IEnumerable<Q> IEnumerable<T>::Select(Q E::* field) const
 {
-	return IEnumerable<T>(
-		LinqIterator(
-			new SelectClause< T, Q >(*this, [&field](const T& a) -> Q
-				{
-					return a::*field;
-				})
-		));
+	std::function<Q(const T&)> func = [&field](const T& a) -> Q
+	{
+		return a.*field;
+	};
+	return IEnumerable<Q>(
+		Iterator<Q>::LinqIterator(
+		new SelectClause<Q, T>(*this, func)
+	));
 }
 
 template < typename T >
 template<typename Q>
 IEnumerable<Q> IEnumerable<T>::Select(std::function<Q(const T&)> func)const
 {
-	return IEnumerable<T>(
-		LinqIterator(
-			new SelectClause<T, Q>(*this, func)
+	return IEnumerable<Q>(
+		Iterator<Q>::LinqIterator(
+			new SelectClause<Q, T>(*this, func)
 		));
 }
