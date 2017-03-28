@@ -48,7 +48,7 @@ public:
 			}
 			break;
 		case Type::value:
-			if (number > 0)
+			if (number > 1)
 			{
 				ite.reset( new TakeClause(next, number-1) );
 			}

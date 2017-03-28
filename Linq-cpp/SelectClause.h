@@ -21,7 +21,7 @@ public:
 		auto next = base.Next();
 		if (!next.IsValid())
 			return LinqIterator(nullptr);
-		return LinqIterator( new SelectClause( base.Next(), functor ));
+		return LinqIterator( new SelectClause( next, functor ));
 	}
 
 

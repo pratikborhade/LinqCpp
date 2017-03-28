@@ -127,7 +127,7 @@ template <typename T>
 void bench()
 {
 	std::vector<T> data(200000);
-
+	auto enumarable = LINQ(data);
 	auto x1 = test("take-vector", [&]() {
 		int sum = 0;
 		int i = 0;
@@ -138,7 +138,7 @@ void bench()
 	});
 
 	auto x2 = test("take-enumerable", [&]() {
-		return LINQ(data)
+		return enumarable
 			.Take(10000)
 			.Select<int>([](const auto& x) { return x.map[0]; })
 			.Sum();
@@ -156,7 +156,7 @@ void bench()
 	});
 
 	x2 = test("where-enumerable", [&]() {
-		return LINQ(data)
+		return enumarable
 			.Select<int>([](const auto& x) { return x.map[0]; })
 			.Where([](const auto& x) { return x > 5; })
 			.Sum();
@@ -178,7 +178,7 @@ void bench()
 	});
 
 	x2 = test("where-take-enumerable", [&]() {
-		return LINQ(data)
+		return enumarable
 			.Where([](const auto& x) { return x.map[0] > 5; })
 			.Take(1)
 			.Select<int>([](const auto& x) { return x.map[0]; })
@@ -205,7 +205,7 @@ void bench()
 	});
 
 	x2 = test("skip-while-take-while-enumerable", [&]() {
-		return LINQ(data)
+		return enumarable
 			.SkipWhile([](const auto& x) { return x.map[0] < 5; })
 			.TakeWhile([](const auto& x) { return x.map[0] >= 5; })
 			.Select<int>([](const auto& x) { return x.map[0]; })

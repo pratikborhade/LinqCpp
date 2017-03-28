@@ -117,7 +117,7 @@ public:
 		return ite;
 	}
 	
-	IEnumerable<T> Take(unsigned int value) const;
+	IEnumerable<T> Take(size_t value) const;
 
 
 	IEnumerable<T> TakeWhile(std::function<bool(const T&)> functor) const;
@@ -126,7 +126,6 @@ public:
 	IEnumerable<T> SkipWhile(std::function<bool (const T&)> functor) const
 	{
 		auto ite = *this;
-		++ite;
 		auto e = end();
 		while (ite != end() && functor(*ite))
 			++ite;
